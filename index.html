@@ -342,12 +342,12 @@ androidTestCompile 'com.android.support.test.espresso:espresso-contrib:2.2'
 public void registerIntentServiceIdlingResource() {
   idlingResource = new IntentServiceIdlingResource(
     InstrumentationRegistry.getTargetContext());
-  Espresso.registerIdlingResources(idlingResource);
+  <font color="yellow">Espresso.registerIdlingResources(idlingResource);</font>
 }
 
 @After
 public void unregisterIntentServiceIdlingResource() {
-  Espresso.unregisterIdlingResources(idlingResource);
+  <font color="yellow">Espresso.unregisterIdlingResources(idlingResource);</font>
 }
 						</pre>
 					</section>
