@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>reveal.js - The HTML Presentation Framework</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>R
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>Espresso</h1>
+					<h3>Give Your App An UI Test</h3>
+					<p>
+						<small>Created by <a href="http://hakim.se">George Lin</a> / <a href="http://twitter.com/hakimel">@georgelin422</a></small>
+					</p>
+				</section>
+
+				<section>
+					<h2>Benifits</h2>
+					<ul>
+						<li>Scheduled + Automatic</li>
+							<ul>
+								<li>so you don't miss a <i>click</i></li>
+							</ul>
+						<li>Automatic Synchronization of the UI</li>
+							<ul>
+								<li>no need for <code>sleep(unknown_secs)</code></li>
+							</ul>
+					</ul>
+				</section>
+
+				<!-- SETUP ESPRESSO -->
+				<section>
+					<section>
+						<h1>Set Up Espresso</h1>
+					</section>
+					<section>
+						<h3>Step 1 Download Support Library</h3>
+						<ol>
+							<li>In Android Studio: Tools -> Android -> SDK Manager</li>
+							<li>Click <i>SDK Tools</i> Tab and you'll find Android Support Repository</li>
+							<li>Click the <i>Install packages...</i> button</li>
+						</ol>
+					</section>
+					<section>
+						<h3>Step 2 Edit build.gradle</h3>
+						<pre style=display:block;white-space:pre-wrap><font size="4">
+dependencies {
+  androidTestCompile 'com.android.support.test:runner:0.4'
+  // Set this dependency to use JUnit 4 rules
+  androidTestCompile 'com.android.support.test:rules:0.4'
+  // Set this dependency to build and run Espresso tests
+  androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
+}
+						</font></pre>
+						<p>And DONE!</p>
+					</section>
+				</section>
+
+				<!-- MAIN PART -->
+				<section>
+					<section>
+						<h1>Basics of Espresso</h1>
+						<h3>Find View, Perform Actions, Check</h3>
+					</section>
+					<section>
+						<h3>Find View, Perform Actions, Check</h3>
+						<pre style=display:block;white-space:pre-wrap><font size="4">
+onView(ViewMatcher)
+  .perform(ViewAction)
+  .check(ViewAssertion)
+						</font></pre>
+					</section>
+					<section>
+						<h3>Find View, Perform Actions, Check</h3>
+						<pre style=display:block;white-space:pre-wrap><font size="4">
+onView(<font color="yellow">withId(android.R.id.button1)</font>)
+  .perform(ViewAction)
+  .check(ViewAssertion)
+						</font></pre>
+						<img data-src="foo.png">
+					</section>
+					<section>
+						<h3>Find View, Perform Actions, Check</h3>
+						<pre style=display:block;white-space:pre-wrap><font size="4">
+onView(withId(android.R.id.button1))
+  .perform(<font color="yellow">click()</font>)
+  .check(ViewAssertion)
+						</font></pre>
+						<img src="foo.png">
+					</section>
+					<section>
+						<h3>Find View, Perform Actions, Check</h3>
+						<pre style=display:block;white-space:pre-wrap><font size="4">
+onView(withId(android.R.id.button1))
+  .perform(click())
+  .check(<font color="yellow">matches(withText("BAR"))</font>)
+						</font></pre>
+						<img src="bar.png">
+					</section>
+					<section>
+						<div>
+						<img width="429" height="600" src="https://google.github.io/android-testing-support-library/assets/espresso-cheat-sheet-2.1.0.png">
+						</div>
+						<a href="https://google.github.io/android-testing-support-library/docs/espresso/cheatsheet/"><font size="4">https://google.github.io/android-testing-support-library/docs/espresso/cheatsheet/</font></a>
+					</section>
+
+					<section>
+						<h1>Combining Matchers</h1>
+						with <font color="yellow" style="font-size:72px">Hamcrest</font>
+					</section>
+					<section>
+						<p>Test case: if the Toolbar title is "FOO"</p>
+						<img width="300" height="500" src="foo_title.png">
+					</section>
+					<section>
+						<p>The title is a <font color="yellow">TextView</font> with a parent of class <font color="yellow">Toolbar</font></p>
+						<pre>
+onView(<font color="yellow">allOf(</font>isAssignableFrom(TextView.class),
+    withParent(isAssignableFrom(Toolbar.class))<font color="yellow">)</font>)
+    .check(matches(withText("FOO")))
+						</pre>
+						<img src="hamcrest_combine.png">
+						<a href="http://www.marcphilipp.de/downloads/posts/2013-01-02-hamcrest-quick-reference/Hamcrest-1.3.pdf">http://www.marcphilipp.de/downloads/posts/2013-01-02-hamcrest-quick-reference/Hamcrest-1.3.pdf</a>
+						<pre>
+testCompile 'org.hamcrest:hamcrest-library:1.3'
+						</pre>
+					</section>
+					<section>
+						<pre>
+onView(<font color="yellow">allOf(</font>isAssignableFrom(TextView.class),
+    withParent(isAssignableFrom(Toolbar.class))<font color="yellow">)</font>)
+    .check(matches(withText("FOO")))
+						</pre>
+						<p>GG in this case</p>
+						<pre>
+&ltToolbar
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="?attr/colorPrimary"&gt
+    <font color="yellow">
+    &ltTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/&gt
+    &ltTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/&gt
+    &ltTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/&gt
+    </font>
+&lt/Toolbar&gt
+						</pre>
+					</section>
+
+					<section>
+						<h1>Custom Matchers</h1>
+					</section>
+					<section>
+						<p>Test case: if the Toolbar title is "FOO"</p>
+						<img width="300" height="500" src="foo_title.png">
+					</section>
+					<section>
+						<p>Veryfy the <i>Toolbar</i> itself, not verify descendant <i>TextView</i></p>
+						<pre>
+onView(isAssignableFrom(Toolbar.class))
+    .check(<font color="yellow">ViewAssertion</font>)
+						</pre>
+					</section>
+					<section>
+						<pre>
+onView(isAssignableFrom(Toolbar.class))
+    .check(<font color="yellow">Assert this Toolbar has its title "FOO"</font>)
+						</pre>
+					</section>
+					<section>
+						<pre>
+onView(isAssignableFrom(Toolbar.class))
+    .check(matches(<font color="yellow">withToolbarTitle("FOO")</font>))
+						</pre>
+					</section>
+					<section>
+						<pre>
+onView(isAssignableFrom(Toolbar.class))
+    .check(matches(<font color="yellow">withToolbarTitle("FOO")</font>))
+						</pre>
+						<pre><font size="4">
+<font color="orange">public static</font> Matcher&ltView&gt <font color="cadetblue">withToolbarTitle</font>(CharSequence title) {
+	<font color="orange">return</font> withToolbarTitle(is(title)); <font color="gray">// is(T) from Hamcrest</font>
+}
+
+<font color="orange">public static</font> Matcher&ltView&gt <font color="cadetblue">withToolbarTitle</font>(<font color="orange">final</font> Matcher&ltCharSequence&gt textMatcher) {
+    checkNotNull(textMatcher);
+    <font color="orange">return new</font> BoundedMatcher&ltView, Toolbar&gt(Toolbar.class) {
+        <font color="yellow">@Override</font>
+        <font color="orange">public void</font> <font color="cadetblue">describeTo</font>(Description description) {
+            description.appendText("with title: ");
+            textMatcher.describeTo(description);
+        }
+
+        <font color="yellow">@Override</font>
+        <font color="orange">public boolean</font> <font color="cadetblue">matchesSafely</font>(Toolbar toolbar) {
+            <font color="orange">return</font> textMatcher.matches(toolbar.getTitle());
+        }
+    };
+}
+						</font></pre>
+					</section>
+
+					<section>
+						<h1>Test AdapterView</h1>
+						<p>Using<font color="yellow" style="font-size:72px"> onData</font></p>
+					</section>
+					<section>
+						<p style="font-size:72px">Why not use <font color="yellow">onView</font>?</p>
+					</section>
+					<section>
+						<div>
+						<img width="429" height="600" src="https://google.github.io/android-testing-support-library/assets/espresso-cheat-sheet-2.1.0.png">
+						</div>
+						<a href="https://google.github.io/android-testing-support-library/docs/espresso/cheatsheet/"><font size="4">https://google.github.io/android-testing-support-library/docs/espresso/cheatsheet/</font></a>
+					</section>
+					<section>
+						<pre>
+onData(ObjectMatcher)
+  .DataOptions <font color="gray">// reference DataInteraction.java</font>
+  .perform(ViewAction)
+  .check(ViewAssertion)
+						</pre>
+						<p>Click item with String "Americano" in a Spinner</p>
+						<pre>
+onData(allOf(is(instanceOf(String.class)), is("Americano")))
+  .inAdapterView(R.id.spinner)
+  .perform(click());
+						</pre>
+					</section>
+
+					<section>
+						<h1>Test RecyclerView</h1>
+					</section>
+					<section>
+						<p>RecyclerView is <font color="red">NOT</font> an AdapterView</p>
+						<div style="width: 429px; font-size: 2em; margin: 0 auto; vertical-align: middle; background-color: #EFEFEF; text-decoration: line-through; color: red">
+            				<code style="color: #3B3B3B">onData</code>
+          				</div>
+					</section>
+					<section>
+						<p>RecyclerView is a <i>ViewGroup</i></p>
+						<img src="recyclerview.png">
+						<p>So, use onView</p>
+					</section>
+					<section>
+						<p>Click item at position 27</p>
+						<pre>
+onView(withId(R.id.recycler_view))
+   .perform(<font color="yellow">RecyclerViewActions.actionOnItemAtPosition(27, click())</font>);
+						</pre>
+						<p>in <i>build.gradle</i></p>
+						<pre><font size="4">
+androidTestCompile 'com.android.support.test.espresso:espresso-contrib:2.2'
+						</font></pre>
+						<p>More in <i>espresso-contrib</i></P>
+						<ul>
+							<li>DrawerLayout</li>
+							<li>DatePicker and TimePicker</li>
+						</ul>
+					</section>
+
+					<section>
+						<h1>Idling Resource</h1>
+					</section>
+					<section>
+						<p>When we talk about Espresso's <font color="yellow">Synchronization</font>, it means...</p>
+						<p>When doing tests...</p>
+						<ul>
+							<li>no UI events in the current message queue</li>
+							<li>no tasks in the default AsyncTask thread pool</li>
+						</ul>
+					</section>
+					<section>
+						<p>In some cases, we need to define out own <font color="yellow">Idling Resource</font></p>
+						<p>Implement <font color="yellow">IdlingResource</font> and override three methods</p>
+						<pre>
+@Override public String getName() {
+  return IntentServiceIdlingResource.class.getName();
+}
+						</pre>
+						<pre>
+@Override public void registerIdleTransitionCallback(
+    ResourceCallback resourceCallback) {
+    <font color="yellow">mResourceCallback</font> = resourceCallback;
+}
+						</pre>
+						<pre>
+@Override public boolean isIdleNow() {
+  boolean idle = !isIntentServiceRunning();
+  if (idle && resourceCallback != null) {
+    <font color="yellow">mResourceCallback</font>.onTransitionToIdle();
+  }
+  return idle;
+}
+						</pre>
+					</section>
+					<section>
+						<p>Register your IdlingResource in test</p>
+						<pre>
+@Before
+public void registerIntentServiceIdlingResource() {
+  idlingResource = new IntentServiceIdlingResource(
+    InstrumentationRegistry.getTargetContext());
+  Espresso.registerIdlingResources(idlingResource);
+}
+
+@After
+public void unregisterIntentServiceIdlingResource() {
+  Espresso.unregisterIdlingResources(idlingResource);
+}
+						</pre>
+					</section>
+
+<!-- 					<section>
+						<h2>Bypass real instance</h2>
+						<p>with <font color="yellow">Dagger</font> and <font color="yellow">Mockito</font></p>
+					</section>
+					<section>
+						<p>In MyAppComponent.class</p>
+						<pre>
+@Singleton @Component(modules = <font color="yellow">DataModule.class</font>)
+public interface MyAppComponent extends CommonComponent {
+}
+						</pre>
+						<p>give it a mock module</P>
+						<pre>
+@Singleton @Component(modules = <font color="yellow">MockDataModule.class</font>)
+public interface MyAppComponent extends CommonComponent {
+}
+						</pre>
+					</section>
+					<section>
+						<p>In MockDataModule.class</p>
+						<pre>
+@Singleton @Component(modules = <font color="yellow">DataModule.class</font>)
+public interface MyAppComponent extends CommonComponent {
+}
+						</pre>
+					</section> -->
+
+				</section>
+
+				<!-- RUN ESPRESSO TESTS -->
+				<section>
+					<section>
+						<h1>Run Espresso Test</h1>
+					</section>
+					<section>
+						<h3>Step 1 Connect Device</h3>
+						<p>Make sure your device is connected with usb</p>
+					</section>
+
+					<section>
+						<h3>Step 2 Turn Off Animations</h3>
+						<p>Turn off animations from <i>Settings</i> by opening <i>Developing Options</i> and turning all the following options off:</p>
+						<ul>
+							<li>Window animation scale</li>
+							<li>Transition animation scale</li>
+							<li>Animator duration scale</li>
+						</ul>
+					</section>
+
+					<section>
+						<h3>Step 3 Run</h3>
+						<code>./gradlew connectedAndroidTest</code>
+					</section>
+				</section>
+
+				<section>
+					<h3>Review</h3>
+					<ul>
+						<li>Automatic Synchronization</li>
+						<li>Set up Espresso</li>
+						<li>Basic - find view, perform actions, check</li>
+						<li>Hamcrest - logical combinations for tests</li>
+						<li>Costum matchers</li>
+						<li>Test AdapterView</li>
+						<li>Test RecyclerView</li>
+						<li>Idling Resource</li>
+						<li>Run Espresso tests</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Thank you</h2>
+					<h3>Questions are welcome</h3>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
